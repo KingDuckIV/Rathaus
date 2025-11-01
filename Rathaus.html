@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rathaus</title>
+<meta name="description" content="Rathaus — industrial electronic from Bergen. Rot, rust, and rhythm." />
+<style>
+  :root{
+    --bg:#0f1112;
+    --ink:#e8e8ea;
+    --muted:#b5b6bb;
+    --purple:#7a2dbe;
+    --purple-deep:#491a7f;
+    --green:#7ccf6e;
+    --green-deep:#3a6e3a;
+    --accent:#c8ffb3;
+  }
+
+  /* Base reset */
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;scroll-behavior:smooth}
+  img{max-width:100%;display:block;height:auto}
+
+  /* Global rotten texture overlay */
+  body::before{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.15;z-index:0;
+    background:
+      radial-gradient( circle at 20% 10%, rgba(124,207,110,.08), transparent 40% ),
+      radial-gradient( circle at 80% 0%, rgba(122,45,190,.10), transparent 45% ),
+      repeating-linear-gradient( 115deg, rgba(0,0,0,.15) 0 2px, rgba(0,0,0,0) 2px 6px ),
+      repeating-linear-gradient( 0deg, rgba(255,255,255,.03) 0 1px, rgba(0,0,0,0) 1px 3px );
+    filter: contrast(110%) saturate(110%);
+  }
+
+  /* Section chrome */
+  section{
+    position:relative; z-index:1;
+    padding:80px 16px; max-width:1100px; margin:0 auto;
+  }
+  .section-title{
+    font-size:clamp(1.4rem, 2.5vw, 2rem);
+    letter-spacing:.03em; margin:0 0 18px 0; display:flex; align-items:center; gap:.7rem;
+  }
+  .section-title .bar{
+    height:6px; width:42px; background:
+      linear-gradient(90deg, var(--green), var(--purple));
+    border-radius:2px; filter:drop-shadow(0 0 6px rgba(124,207,110,.25));
+  }
+  .card{
+    background:
+      linear-gradient(180deg, rgba(122,45,190,.08), rgba(60,26,103,.12)),
+      linear-gradient(180deg, rgba(124,207,110,.05), rgba(25,36,28,.08));
+    border:1px solid rgba(124,207,110,.25);
+    border-radius:18px; padding:18px;
+    box-shadow: 0 0 0 1px rgba(122,45,190,.18) inset, 0 12px 30px rgba(0,0,0,.35);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Grunge edge */
+  .rust{
+    position:relative;
+    border-image: repeating-linear-gradient( to right,
+      rgba(124,207,110,.6) 0 8px,
+      rgba(122,45,190,.6) 8px 16px,
+      rgba(124,207,110,.1) 16px 24px,
+      rgba(122,45,190,.1) 24px 32px ) 1;
+  }
+  .rust::after{
+    content:""; position:absolute; inset:-8px;
+    background:
+      radial-gradient( 60px 12px at 20% 0%, rgba(122,45,190,.25), transparent 70% ),
+      radial-gradient( 70px 14px at 75% 100%, rgba(124,207,110,.22), transparent 70% );
+    pointer-events:none; filter:blur(8px); opacity:.6;
+  }
+
+  /* Sticky Nav */
+  .nav{
+    position:sticky; top:0; z-index:10;
+    background:linear-gradient(180deg, rgba(15,17,18,.95), rgba(15,17,18,.75));
+    border-bottom:1px solid rgba(124,207,110,.25);
+    backdrop-filter: blur(8px);
+  }
+  .nav-inner{max-width:1100px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .brand{
+    display:flex; align-items:center; gap:.6rem; text-decoration:none; color:var(--ink)
+  }
+
+  .brand span{font-weight:700; letter-spacing:.08em}
+  .nav-links{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  }
+  .nav-links a{
+    color:var(--muted); text-decoration:none; font-size:.95rem; padding:8px 10px; border-radius:10px;
+  }
+  .nav-links a:hover{color:var(--ink); background:rgba(122,45,190,.16)}
+  .hamburger{display:none; border:1px solid rgba(124,207,110,.35); background:transparent; color:var(--ink); padding:8px 10px; border-radius:10px}
+  .hamburger:active{transform:scale(.98)}
+
+  @media (max-width:860px){
+    .hamburger{display:inline-flex; align-items:center; gap:.5rem; cursor:pointer}
+    .nav-links{display:none; width:100%; flex-direction:column; align-items:flex-start; padding:10px 2px}
+    .nav.open .nav-links{display:flex}
+  }
+
+  /* Hero strip */
+  .hero{
+    padding:70px 16px 30px; max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; align-items:end;
+  }
+  .hero h1{
+    font-size:clamp(2rem, 6vw, 3.2rem); margin:.3rem 0 .4rem; line-height:1.05;
+    background: linear-gradient(90deg, var(--accent), var(--ink));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter: drop-shadow(0 0 22px rgba(124,207,110,.25));
+  }
+  .tag{
+    display:inline-block; font-size:.9rem; color:var(--accent);
+    border:1px dashed rgba(124,207,110,.45); padding:6px 10px; border-radius:999px;
+    background:rgba(58,110,58,.18)
+  }
+  @media (max-width:860px){ .hero{grid-template-columns:1fr} }
+
+  /* Embeds */
+  .embed-wrap{aspect-ratio: 16/9; width:100%; overflow:hidden; border-radius:14px}
+  .embed-wrap iframe{width:100%; height:100%; border:0}
+
+  /* Gallery */
+  .grid{
+    display:grid; gap:14px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (max-width:1100px){ .grid{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:760px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:480px){ .grid{grid-template-columns:1fr} }
+  .tile{
+    position:relative; overflow:hidden; border-radius:14px;
+    border:1px solid rgba(122,45,190,.35); background:#111;
+  }
+  .tile img{transition:transform .4s ease}
+  .tile:hover img{transform:scale(1.05)}
+  .chip{
+    position:absolute; left:10px; bottom:10px; font-size:.75rem; color:#e7fde0;
+    background:rgba(58,110,58,.75); padding:6px 8px; border-radius:999px; border:1px solid rgba(124,207,110,.45)
+  }
+
+  /* Links hub */
+  .links{display:grid; gap:12px; grid-template-columns:repeat(2,1fr)}
+  @media (max-width:640px){ .links{grid-template-columns:1fr} }
+  .link{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; text-decoration:none; color:var(--ink);
+    border:1px solid rgba(124,207,110,.35); border-radius:14px;
+    background:linear-gradient(180deg, rgba(122,45,190,.1), rgba(122,45,190,.02));
+  }
+  .link:hover{background:linear-gradient(180deg, rgba(124,207,110,.15), rgba(122,45,190,.06))}
+
+  /* Library */
+  .library{display:grid; gap:10px}
+  .track{
+    display:grid; grid-template-columns: 1fr auto auto; gap:10px; align-items:center;
+    padding:12px 14px; border:1px solid rgba(122,45,190,.35); border-radius:12px;
+    background:linear-gradient(90deg, rgba(122,45,190,.08), rgba(124,207,110,.05));
+  }
+  .track small{color:var(--muted)}
+  .btn{
+    appearance:none; border:1px solid rgba(124,207,110,.5); background:rgba(58,110,58,.2);
+    color:var(--ink); padding:8px 12px; border-radius:10px; cursor:pointer;
+  }
+  .btn:hover{background:rgba(124,207,110,.25)}
+  .ghost{border-color:rgba(122,45,190,.5); background:rgba(122,45,190,.15)}
+  .ghost:hover{background:rgba(122,45,190,.25)}
+  @media (max-width:560px){
+    .track{grid-template-columns: 1fr; align-items:start}
+    .track .actions{display:flex; gap:8px; flex-wrap:wrap}
+  }
+
+  /* Merch */
+  .merch{
+    display:grid; gap:14px; grid-template-columns:repeat(3, 1fr)
+  }
+  @media (max-width:900px){ .merch{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:560px){ .merch{grid-template-columns:1fr} }
+  .merch .tile .price{
+    position:absolute; top:10px; right:10px; background:rgba(122,45,190,.8); color:#fff;
+    padding:6px 8px; border-radius:999px; font-size:.8rem; border:1px solid rgba(255,255,255,.2)
+  }
+
+  /* Contact */
+  form{display:grid; gap:10px}
+  input, textarea{
+    width:100%; border-radius:10px; border:1px solid rgba(124,207,110,.35);
+    background:#0b0d0e; color:var(--ink); padding:10px 12px
+  }
+  textarea{min-height:120px; resize:vertical}
+  .success{display:none; margin-top:8px; color:var(--accent)}
+  .error{display:none; margin-top:8px; color:#ffb3c1}
+
+  /* Footer */
+  footer{
+    padding:40px 16px; text-align:center; color:var(--muted);
+    border-top:1px solid rgba(124,207,110,.25);
+    background:linear-gradient(180deg, rgba(15,17,18,.75), rgba(15,17,18,.95));
+  }
+
+  /* Utility badges */
+  .note{
+    font-size:.9rem; color:var(--muted); margin:8px 0 0;
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Rathaus Home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>RATHAUS</span>
+      </a>
+
+      <button class="hamburger" id="hamburger" aria-expanded="false" aria-controls="menu">
+        ☰ Menu
+      </button>
+
+      <div class="nav-links" id="menu" role="navigation" aria-label="Main">
+        <a href="#about">About</a>
+        <a href="#spotify">Spotify</a>
+        <a href="#library">Library</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#videos">Videos</a>
+        <a href="#links">Links</a>
+        <a href="#merch">Merch</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <div>
+      <span class="tag">Bergen industrial electronic</span>
+      <h1>Rathaus</h1>
+      <p class="note">Bergen based experimental electronica project</p>
+    </div>
+
+  </div>
+
+  <!-- SPOTIFY SECTION -->
+  <section id="spotify">
+    <h2 class="section-title"><span class="bar"></span><span>Spotify</span></h2>
+    <div class="card rust">
+      <div class="embed-wrap">
+        <!-- Another sample embed, swap as needed -->
+        <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/artist/1osI9UJpUHDfabSpzg1VO1?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIBRARY DOWNLOADS -->
+  <section id="library">
+    <h2 class="section-title"><span class="bar"></span><span>Library</span></h2>
+    <div class="library">
+      <!-- Each .track can link to hosted files in your repo or server -->
+      <div class="track card">
+        <div>
+          <strong>Ricin Toxin</strong><br />
+          <small>Psychedelic Electronica</small>
+        </div>
+        <div class="actions">
+          <a class="btn" href="Ricin Toxin.wav" download>Download</a>
+        </div>
+        <div class="actions">
+          <audio controls preload="none" style="width:220px">
+            <source src="Ricin Toxin.wav" type="audio/mpeg"/>
+          </audio>
+        </div>
+      </div>
+
+      <div class="track card">
+        <div>
+          <strong>Freedom to Eat Dodo Meat</strong><br />
+          <small>Retro 16 bit electronica</small>
+        </div>
+        <div class="actions">
+          <a class="btn" href="Dodo Meat.mp3" download>Download</a>
+        </div>
+        <div class="actions">
+          <audio controls preload="none" style="width:220px">
+            <source src="Dodo Meat.mp3" type="audio/mpeg"/>
+          </audio>
+        </div>
+      </div>
+
+      <div class="track card">
+        <div>
+          <strong>Grümsverk</strong><br />
+          <small>Dark industrial Electronica</small>
+        </div>
+        <div class="actions">
+          <a class="btn" href="Grumsverk.wav" download>Download</a>
+        </div>
+        <div class="actions">
+          <audio controls preload="none" style="width:220px">
+            <source src="Grumsverk.wav" type="audio/mpeg"/>
+          </audio>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <h2 class="section-title"><span class="bar"></span><span>Gallery</span></h2>
+    <div class="grid">
+      <!-- Replace src values with your images -->
+      <figure class="tile"><img src="Rathaus Promo 2.png" alt="Rust wall texture"><figcaption class="chip">Promo 1</figcaption></figure>
+      <figure class="tile"><img src="Rathaus Promo 3.png" alt="Neon reflection"><figcaption class="chip">Promo 2</figcaption></figure>
+      <figure class="tile"><img src="Rathaus Promo Tunnel.png" alt="Steel and grime"><figcaption class="chip">Sofie in a tunnel</figcaption></figure>
+      <figure class="tile"><img src="Rathaus Sopranos.png" alt="Concrete tunnel"><figcaption class="chip">Rathaus Sopranos Meme</figcaption></figure>
+      <figure class="tile"><img src="shroom.png" alt="Wires and pipes"><figcaption class="chip">SHROOMS!</figcaption></figure>
+      <figure class="tile"><img src="Sof Rathaus PRomo small.jpg" alt="Green fog"><figcaption class="chip">Sofie Trapped</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section id="videos">
+    <h2 class="section-title"><span class="bar"></span><span>Videos</span></h2>
+    <div class="card rust" style="margin-bottom:14px">
+      <p>If videos dont work we blame YouTube</p>
+      <div class="embed-wrap">
+        <!-- Replace YouTube ID -->
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/lAjh_F1haTE?si=ZQeOGSVJQMpE_7fM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="card rust">
+      <div class="embed-wrap">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DWZ4XYyTuLI?si=6eRQdipuuK46f37N" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- LINKS HUB -->
+  <section id="links">
+    <h2 class="section-title"><span class="bar"></span><span>Links</span></h2>
+    <div class="links">
+      <a class="link" href="https://open.spotify.com/artist/1osI9UJpUHDfabSpzg1VO1?si=YEVMfoqcTaeFDBx1yrblyw" target="_blank" rel="noopener">
+        <span>Spotify</span><span>↗</span>
+      </a>
+      <a class="link" href="https://rathaus1.bandcamp.com/" target="_blank" rel="noopener">
+        <span>Bandcamp</span><span>↗</span>
+      </a>
+      <a class="link" href="https://soundcloud.com/rathaus1" target="_blank" rel="noopener">
+        <span>SoundCloud</span><span>↗</span>
+      </a>
+      <a class="link" href="https://www.instagram.com/rathaus.band/" target="_blank" rel="noopener">
+        <span>Instagram</span><span>↗</span>
+      </a>
+      <a class="link" href="https://www.youtube.com/@RathausBand" target="_blank" rel="noopener">
+        <span>YouTube</span><span>↗</span>
+      </a>
+      <a class="link" href="rathausproject.gmail.com">
+        <span>Email</span><span>✉</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- MERCH -->
+  <section id="merch">
+    <h2 class="section-title"><span class="bar"></span><span>Merch</span></h2>
+    <div class="merch">
+      <div class="tile">
+        <span class="price">€0</span>
+        <img src="" alt="Rathaus shirt" />
+      </div>
+      <div class="tile">
+        <span class="price">€0</span>
+        <img src="" alt="Rathaus hoodie" />
+      </div>
+      <div class="tile">
+        <span class="price">€0</span>
+        <img src="" alt="Rathaus sticker pack" />
+      </div>
+    </div>
+    <p class="note">No Merch Yet!</p>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2 class="section-title"><span class="bar"></span><span>About</span></h2>
+    <div class="card">
+      <p>
+        Rathaus is an industrial electronic project from Bergen created by Sofie Rørlien and Vegard Fotland. It is a blend of Alternative and progressive metal and industrial electronica.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> Rathaus. Bergen, Norway.</p>
+  </footer>
+
+<script>
+  // Nav hamburger
+  const nav = document.getElementById('nav');
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('menu');
+  hamburger.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  // Close menu on link click on mobile
+  Array.from(menu.querySelectorAll('a')).forEach(a=>{
+    a.addEventListener('click', ()=> { nav.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); });
+  });
+
+  // Contact form handler with mailto fallback
+  const form = document.getElementById('contactForm');
+  const okMsg = document.getElementById('okMsg');
+  const errMsg = document.getElementById('errMsg');
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const data = new FormData(form);
+    const name = data.get('name'); const email = data.get('email'); const message = data.get('message');
+    // Simple mailto to open client. Replace with real POST as needed.
+    try{
+      const subject = encodeURIComponent(`Rathaus contact — ${name}`);
+      const body = encodeURIComponent(`${message}\n\nFrom: ${name} <${email}>`);
+      window.location.href = `mailto:booking@rathaus.no?subject=${subject}&body=${body}`;
+      okMsg.style.display='block'; errMsg.style.display='none';
+      form.reset();
+    }catch(err){
+      okMsg.style.display='none'; errMsg.style.display='block';
+    }
+  });
+
+  // Current year
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
